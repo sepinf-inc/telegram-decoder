@@ -18,12 +18,42 @@ import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.telegram.tgnet.TLRPC;
+
 public class Utilities {
 
     public static Pattern pattern = Pattern.compile("[\\-0-9]+");
     public static SecureRandom random = new SecureRandom();
 
-    
+    public static String fixFileName(String fileName) {
+        if (fileName != null) {
+            fileName = fileName.replaceAll("[\u0001-\u001f<>\u202E:\"/\\\\|?*\u007f]+", "").trim();
+        }
+        return fileName;
+    }
+    public static String getDocumentFileName(TLRPC.Document document) {
+        if (document == null) {
+            return null;
+        }
+        if (document.file_name_fixed != null) {
+            return document.file_name_fixed;
+        }
+        String fileName = null;
+        if (document != null) {
+            if (document.file_name != null) {
+                fileName = document.file_name;
+            } else {
+                for (int a = 0; a < document.attributes.size(); a++) {
+                    TLRPC.DocumentAttribute documentAttribute = document.attributes.get(a);
+                    if (documentAttribute instanceof TLRPC.TL_documentAttributeFilename) {
+                        fileName = documentAttribute.file_name;
+                    }
+                }
+            }
+        }
+        fileName = fixFileName(fileName);
+        return fileName != null ? fileName : "";
+    }
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 

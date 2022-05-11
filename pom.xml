@@ -17,7 +17,7 @@
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <api.version>1.0.4-SNAPSHOT</api.version>
-    <impl.version>1.0.7-SNAPSHOT</impl.version>
+    <impl.version>1.0.8-SNAPSHOT</impl.version>
   </properties>
 
   <dependencies>
