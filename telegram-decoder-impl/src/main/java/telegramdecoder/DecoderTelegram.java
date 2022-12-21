@@ -176,8 +176,7 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                 }
                 if(m.media.document!=null) {
                     if(m.media.document instanceof TLRPC.TL_documentEmpty){
-                        //ignore see https://github.com/sepinf-inc/IPED/issues/1454
-                        //message.setData(message.getData()+" Empty media");
+                        message.setData(msgDataAndSeparator + "Empty media");
                     }
                     message.setMediaMime(m.media.document.mime_type);
                 }else
