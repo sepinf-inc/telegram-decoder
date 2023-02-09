@@ -166,9 +166,13 @@ public class DecoderTelegram implements DecoderTelegramInterface{
             message.setTimeStamp(Date.from(Instant.ofEpochSecond(m.date)));
             //message.timeStamp=LocalDateTime.ofInstant(Instant.ofEpochSecond(), ZoneId.systemDefault())
             if(m.media!=null) {
+                String msgDataAndSeparator = "";
+                if (message.getData() != null && !message.getData().trim().isEmpty()) {
+                    msgDataAndSeparator = message.getData().trim() + " | ";
+                }
                 if(m.media.document!=null) {
                     if(m.media.document instanceof TLRPC.TL_documentEmpty){
-                        message.setData(message.getData()+" Empty media");
+                        message.setData(msgDataAndSeparator + "Empty media");
                     }
                     message.setMediaMime(m.media.document.mime_type);
                 }else
@@ -182,10 +186,10 @@ public class DecoderTelegram implements DecoderTelegramInterface{
 
                 }else
                 if(m.media.description!=null){
-                    message.setData(message.getData()+"<br/> Desc"+m.media.description);
+                    message.setData(msgDataAndSeparator + "Desc: "+m.media.description);
                 }else
                 if(m.media.game!=null){
-                    message.setData(message.getData()+"<br/> Game"+m.media.game.title);
+                    message.setData(msgDataAndSeparator + "Game: "+m.media.game.title);
                 }else
                 if(m.media.geo!=null){
                     message.setLatitude(m.media.geo.lat);
@@ -193,23 +197,23 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                     message.setMediaMime("geo");
                 }else                
                 if(m.media.vcard!=null){
-                    message.setData(message.getData()+"<br/> Vcard"+m.media.vcard);
+                    message.setData(msgDataAndSeparator + "Vcard: "+m.media.vcard);
                 }else
                 if(m.media.phone_number!=null){
-                    message.setData(message.getData()+"<br/> phone"+m.media.phone_number);
+                    message.setData(msgDataAndSeparator + "Phone: "+m.media.phone_number);
                 }else
                 if(m.media instanceof TLRPC.TL_messageMediaEmpty){
-                    message.setData(message.getData()+"<br/> Empty media");
+                    //ignore see https://github.com/sepinf-inc/IPED/issues/1454
+                    //message.setData(message.getData()+" Empty media");
                 }else
                 if(m.media instanceof TLRPC.TL_messageMediaPoll){
                     TLRPC.TL_messageMediaPoll mpool=(TLRPC.TL_messageMediaPoll)m.media;
-                    String text = "pool: " + mpool.poll.question;
-                    for(TLRPC.TL_pollAnswer a:mpool.poll.answers){
-                       text += "<br/>" +  a.text;
+                    String text = "Pool: " + mpool.poll.question;
+                    int i = 0;
+                    for(TLRPC.TL_pollAnswer a : mpool.poll.answers){
+                       text += " | Answer " + (++i) + ": " + a.text;
                     }
-                    if (message.getData() != null) {
-                        text = message.getData() + "<br/>" + text;
-                    }
+                    text = msgDataAndSeparator + text;
                     message.setData(text);
                     
                 }
