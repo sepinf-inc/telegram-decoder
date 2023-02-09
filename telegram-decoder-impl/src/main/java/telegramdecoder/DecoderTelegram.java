@@ -6,29 +6,24 @@
 package telegramdecoder;
 
 
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.telegram.tgnet.SerializedData;
+import org.telegram.tgnet.TLRPC;
+import org.telegram.tgnet.TLRPC.DocumentAttribute;
+
 import dpf.ap.gpinf.interfacetelegram.ContactInterface;
 import dpf.ap.gpinf.interfacetelegram.DecoderTelegramInterface;
 import dpf.ap.gpinf.interfacetelegram.MessageInterface;
 import dpf.ap.gpinf.interfacetelegram.PhotoData;
-import java.lang.reflect.Field;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.telegram.tgnet.SerializedData;
-import org.telegram.tgnet.TLObject;
-import org.telegram.tgnet.TLRPC;
-import org.telegram.tgnet.TLRPC.DocumentAttribute; 
 
 /**
  *
@@ -44,9 +39,10 @@ public class DecoderTelegram implements DecoderTelegramInterface{
     public void setDecoderData(byte[] data,int TYPE) {
         SerializedData s=new SerializedData(data);
         int aux=s.readInt32(false);
-        m=null;
-        u=null;
-        c=null;
+        m = null;
+        u = null;
+        c = null;
+        cf = null;
         if(TYPE==MESSAGE){
             m=TLRPC.Message.TLdeserialize(s,aux, false);
         }
@@ -239,6 +235,7 @@ public class DecoderTelegram implements DecoderTelegramInterface{
     	                
     }
 
+
     @Override
     public void getChatData(ContactInterface chat) {
         if(chat!=null && c!=null){
@@ -247,9 +244,20 @@ public class DecoderTelegram implements DecoderTelegramInterface{
             chat.setName(c.title);
             chat.setLastName(null);
             chat.setPhone(null);
-            
         }
         
+    }
+
+    @Override
+    public Map<String, Object> getAlltMetadata() {
+        Map<String, Object> other = new TreeMap<>();
+
+        Util.fieldsToMap(other, this.c);
+        Util.fieldsToMap(other, cf);
+        Util.fieldsToMap(other, this.u);
+        Util.fieldsToMap(other, this.m);
+
+        return other;
     }
 
     
