@@ -31,7 +31,10 @@ public class Util {
 
         for (Field f : fields) {
             try {
-                other.put(f.getName(), f.get(o));
+                Object val = f.get(o);
+                if (val != null) {
+                    other.put(f.getName(), val.toString());
+                }
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
