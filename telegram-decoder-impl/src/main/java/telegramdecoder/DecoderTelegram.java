@@ -6,29 +6,24 @@
 package telegramdecoder;
 
 
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.telegram.tgnet.SerializedData;
+import org.telegram.tgnet.TLRPC;
+import org.telegram.tgnet.TLRPC.DocumentAttribute;
+
 import dpf.ap.gpinf.interfacetelegram.ContactInterface;
 import dpf.ap.gpinf.interfacetelegram.DecoderTelegramInterface;
 import dpf.ap.gpinf.interfacetelegram.MessageInterface;
 import dpf.ap.gpinf.interfacetelegram.PhotoData;
-import java.lang.reflect.Field;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.telegram.tgnet.SerializedData;
-import org.telegram.tgnet.TLObject;
-import org.telegram.tgnet.TLRPC;
-import org.telegram.tgnet.TLRPC.DocumentAttribute; 
 
 /**
  *
@@ -44,9 +39,10 @@ public class DecoderTelegram implements DecoderTelegramInterface{
     public void setDecoderData(byte[] data,int TYPE) {
         SerializedData s=new SerializedData(data);
         int aux=s.readInt32(false);
-        m=null;
-        u=null;
-        c=null;
+        m = null;
+        u = null;
+        c = null;
+        cf = null;
         if(TYPE==MESSAGE){
             m=TLRPC.Message.TLdeserialize(s,aux, false);
         }
@@ -174,9 +170,19 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                 if (message.getData() != null && !message.getData().trim().isEmpty()) {
                     msgDataAndSeparator = message.getData().trim() + " | ";
                 }
+                if (m.media.extended_media != null
+                        && m.media.extended_media instanceof TLRPC.TL_messageExtendedMediaPreview) {
+                    TLRPC.TL_messageExtendedMediaPreview preview = (TLRPC.TL_messageExtendedMediaPreview) m.media.extended_media;
+                    message.setThumb(preview.thumb.bytes);
+                    
+                }
                 if(m.media.document!=null) {
                     if(m.media.document instanceof TLRPC.TL_documentEmpty){
                         message.setData(msgDataAndSeparator + "Empty media");
+                    }
+
+                    if (m.media.document.thumbs != null && m.media.document.thumbs.size() > 0) {
+                        message.setThumb(m.media.document.thumbs.get(0).bytes);
                     }
                     message.setMediaMime(m.media.document.mime_type);
                 }else
@@ -186,31 +192,29 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                 }else
                 if(m.media.webpage!=null) {
                     message.setLink(true);
+                    try {
+                        message.setThumb(m.media.webpage.cached_page.documents.get(0).thumbs.get(0).bytes);
+                    } catch (Exception e) {
+                        message.setThumb(null);
+                    }
                     message.setMediaMime("link");
 
-                }else
-                if(m.media.description!=null){
+                } else if (m.media.description != null) {
                     message.setData(msgDataAndSeparator + "Desc: "+m.media.description);
-                }else
-                if(m.media.game!=null){
+                } else if (m.media.game != null) {
                     message.setData(msgDataAndSeparator + "Game: "+m.media.game.title);
-                }else
-                if(m.media.geo!=null){
+                } else if (m.media.geo != null) {
                     message.setLatitude(m.media.geo.lat);
                     message.setLongitude(m.media.geo._long);
                     message.setMediaMime("geo");
-                }else                
-                if(m.media.vcard!=null){
+                } else if (m.media.vcard != null) {
                     message.setData(msgDataAndSeparator + "Vcard: "+m.media.vcard);
-                }else
-                if(m.media.phone_number!=null){
+                } else if (m.media.phone_number != null) {
                     message.setData(msgDataAndSeparator + "Phone: "+m.media.phone_number);
-                }else
-                if(m.media instanceof TLRPC.TL_messageMediaEmpty){
+                } else if (m.media instanceof TLRPC.TL_messageMediaEmpty) {
                     //ignore see https://github.com/sepinf-inc/IPED/issues/1454
                     //message.setData(message.getData()+" Empty media");
-                }else
-                if(m.media instanceof TLRPC.TL_messageMediaPoll){
+                } else if (m.media instanceof TLRPC.TL_messageMediaPoll) {
                     TLRPC.TL_messageMediaPoll mpool=(TLRPC.TL_messageMediaPoll)m.media;
                     String text = "Pool: " + mpool.poll.question;
                     int i = 0;
@@ -243,6 +247,7 @@ public class DecoderTelegram implements DecoderTelegramInterface{
     	                
     }
 
+
     @Override
     public void getChatData(ContactInterface chat) {
         if(chat!=null && c!=null){
@@ -251,9 +256,20 @@ public class DecoderTelegram implements DecoderTelegramInterface{
             chat.setName(c.title);
             chat.setLastName(null);
             chat.setPhone(null);
-            
         }
         
+    }
+
+    @Override
+    public Map<String, Object> getAlltMetadata() {
+        Map<String, Object> other = new TreeMap<>();
+
+        Util.fieldsToMap(other, this.c);
+        Util.fieldsToMap(other, cf);
+        Util.fieldsToMap(other, this.u);
+        Util.fieldsToMap(other, this.m);
+
+        return other;
     }
 
     

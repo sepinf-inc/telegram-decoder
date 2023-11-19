@@ -13,6 +13,7 @@ package dpf.ap.gpinf.interfacetelegram;
 
 
 import java.util.List;
+import java.util.Map;
 
 public interface DecoderTelegramInterface {
 
@@ -35,4 +36,6 @@ public interface DecoderTelegramInterface {
     public List<PhotoData> getPhotoData();
 
     public long getDocumentSize();
+
+    public Map<String, Object> getAlltMetadata();
 }

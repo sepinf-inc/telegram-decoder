@@ -16,8 +16,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <api.version>1.0.4-SNAPSHOT</api.version>
-    <impl.version>1.0.9-SNAPSHOT</impl.version>
+    <api.version>1.0.5-SNAPSHOT</api.version>
+    <impl.version>1.0.10-SNAPSHOT</impl.version>
   </properties>
 
   <dependencies>
