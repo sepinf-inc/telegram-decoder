@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-        <groupId>dpf.ap</groupId>
-        <artifactId>telegram-decoder</artifactId>
-        <version>1.0</version>
+      <groupId>dpf.ap</groupId>
+      <artifactId>telegram-decoder</artifactId>
+      <version>${revision}</version>
   </parent>
 
   <artifactId>telegram-decoder-api</artifactId>
-  <version>${api.version}</version>
+  <version>${revision}</version>
   <packaging>jar</packaging>
 
 </project>
