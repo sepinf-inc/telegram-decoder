@@ -238,9 +238,9 @@ public class DecoderTelegram implements DecoderTelegramInterface{
         }
         if(message.getMediaMime()==null && message.getType()==null && (message.getData()==null || message.getData().isEmpty()) ){
             if(m.media!=null){
-                System.out.println(objToString(m.media));
+                //System.out.println(objToString(m.media));
             }else{
-                System.out.println(objToString(m));
+                //System.out.println(objToString(m));
             }
         }
 
