@@ -22,6 +22,7 @@ import org.telegram.tgnet.TLRPC.DocumentAttribute;
 
 import dpf.ap.gpinf.interfacetelegram.ContactInterface;
 import dpf.ap.gpinf.interfacetelegram.DecoderTelegramInterface;
+import dpf.ap.gpinf.interfacetelegram.Forwarded;
 import dpf.ap.gpinf.interfacetelegram.MessageInterface;
 import dpf.ap.gpinf.interfacetelegram.PhotoData;
 
@@ -95,6 +96,20 @@ public class DecoderTelegram implements DecoderTelegramInterface{
         }        
         return 0;
     }
+
+    private void getForwarded(Forwarded f) {
+        if (f != null && m != null && m.fwd_from != null) {
+            if (m.fwd_from.from_id.user_id != 0)
+                f.setForwardedId(m.fwd_from.from_id.user_id);
+            if (m.fwd_from.from_id.chat_id != 0)
+                f.setForwardedId(m.fwd_from.from_id.chat_id);
+            if (m.fwd_from.from_id.channel_id != 0)
+                f.setForwardedId(m.fwd_from.from_id.channel_id);
+            f.setForwardedName(m.fwd_from.from_name);
+            f.setPostAuthor(m.fwd_from.post_author);
+        }
+    }
+
     private String objToString(Object o){
         Class<?> c=o.getClass();
         StringBuilder sb=new StringBuilder();
@@ -123,7 +138,7 @@ public class DecoderTelegram implements DecoderTelegramInterface{
             
             message.setFromMe(m.out);
             message.setData(m.message);
-            
+            getForwarded(message.getForwarded());
             if(m.action!=null) {
                     message.setType(m.action.getClass().getSimpleName());
                     
@@ -271,22 +286,36 @@ public class DecoderTelegram implements DecoderTelegramInterface{
 
         return other;
     }
-
     
+    private List<String> getDocumentNames(TLRPC.Document doc) {
+        ArrayList<String> list = new ArrayList<>();
+        if (doc != null) {
+            list.add(m.media.document.id + "");
+            list.add(m.media.document.file_name);
+            list.add(m.media.document.file_name_fixed);
+            for (DocumentAttribute at : m.media.document.attributes) {
+                // tentar achar pelo nome do arquivo original
+                if (at.file_name != null) {
+                    list.add(at.file_name);
+                }
+            }
+        }
+        return list;
+    }
 
     @Override
     public List<String> getDocumentNames() {
         ArrayList<String> list=new ArrayList<>();
         if(m!=null && m.media!=null && m.media.document!=null){
-             list.add(m.media.document.id+"");
-             for( DocumentAttribute at :m.media.document.attributes){
-                //tentar achar pelo nome do arquivo original
-                if(at.file_name!=null){
-                	list.add(at.file_name);
-                }
-            }
+            list.addAll(getDocumentNames( m.media.document));
          }
-        return list;
+        
+        if(m!=null && m.media!=null &&  m.media.webpage!=null && m.media.webpage.document!=null) {
+            list.addAll(getDocumentNames(m.media.webpage.document));
+        }
+
+        list.removeIf(val -> val == null);
+         return list;
     }
 
     @Override
@@ -315,6 +344,7 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                 if(m.media.webpage.photo!=null && m.media.webpage.photo.sizes!=null){
                     list.addAll(getPhotosFromSize(m.media.webpage.photo.sizes));
                 }
+
             }
             if(m.media.document!=null){
                 if(m.media.document.thumbs!=null){
@@ -354,6 +384,19 @@ public class DecoderTelegram implements DecoderTelegramInterface{
         return l;
     }
 
+    
+    public List<PhotoData> getThumbs() {
+        ArrayList<PhotoData> list = new ArrayList<>();
+        if (m != null && m.media != null && m.media.document != null) {
+            list.addAll(getPhotosFromSize(m.media.document.thumbs));
+        }
+        if (m != null && m.media != null && m.media.webpage != null && m.media.webpage.document != null) {
+            list.addAll(getPhotosFromSize(m.media.webpage.document.thumbs));
+        }
+        return list;
+    }
+    
+    
     @Override
     public long getDocumentSize() {
         if(m!=null && m.media!=null && m.media.document!=null){
