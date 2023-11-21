@@ -74,4 +74,6 @@ public interface MessageInterface {
     public void setLongitude(Double d);
 
     public Double getLongitude();
+
+    public Forwarded getForwarded();
 }

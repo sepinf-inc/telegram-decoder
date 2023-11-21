@@ -38,4 +38,6 @@ public interface DecoderTelegramInterface {
     public long getDocumentSize();
 
     public Map<String, Object> getAlltMetadata();
+
+    public List<PhotoData> getThumbs();
 }
