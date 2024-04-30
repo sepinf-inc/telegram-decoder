@@ -9,7 +9,6 @@
   </parent>
 
   <artifactId>telegram-decoder-impl</artifactId>
-  <version>${revision}</version>
   <packaging>jar</packaging>
   
   <dependencies>
