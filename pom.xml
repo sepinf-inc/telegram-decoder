@@ -2,6 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <revision>1.0.11</revision>
+  </properties>
+
   <groupId>dpf.ap</groupId>
   <artifactId>telegram-decoder</artifactId>
   <version>${revision}</version>
@@ -11,13 +18,6 @@
     <module>telegram-decoder-api</module>
     <module>telegram-decoder-impl</module>
   </modules>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
-    <revision>1.0.11</revision>
-  </properties>
 
   <dependencies>
     <dependency>
