@@ -115,6 +115,15 @@ public class DecoderTelegram implements DecoderTelegramInterface{
         return sb.toString();
     }
 
+    private void updateThumb(MessageInterface message, byte[] new_thumb) {
+        if (new_thumb == null)
+            return;
+        byte decoded[] = Util.decodeThumb(new_thumb);
+        if (message.getThumb() == null || message.getThumb().length < decoded.length) {
+            message.setThumb(decoded);
+        }
+    }
+
     @Override
     public void getMessageData(MessageInterface message) {
        
@@ -175,8 +184,8 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                     for (MessageExtendedMedia media : m.media.extended_media) {
                         if (media instanceof TLRPC.TL_messageExtendedMediaPreview) {
                             TLRPC.TL_messageExtendedMediaPreview preview = (TLRPC.TL_messageExtendedMediaPreview) media;
-                            message.setThumb(preview.thumb.bytes);
-                            break;
+                            updateThumb(message, preview.thumb.bytes);
+
                         }
                     }
                     
@@ -187,7 +196,9 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                     }
 
                     if (m.media.document.thumbs != null && m.media.document.thumbs.size() > 0) {
-                        message.setThumb(m.media.document.thumbs.get(0).bytes);
+                        for (TLRPC.PhotoSize thumb :m.media.document.thumbs) {
+                            updateThumb(message, thumb.bytes);
+                        }
                     }
                     message.setMediaMime(m.media.document.mime_type);
                 }else
@@ -198,7 +209,12 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                 if(m.media.webpage!=null) {
                     message.setLink(true);
                     try {
-                        message.setThumb(m.media.webpage.cached_page.documents.get(0).thumbs.get(0).bytes);
+                        for (TLRPC.Document doc : m.media.webpage.cached_page.documents) {
+                            for (TLRPC.PhotoSize thumb : doc.thumbs) {
+                                updateThumb(message, thumb.bytes);
+                            }
+                        }
+
                     } catch (Exception e) {
                         message.setThumb(null);
                     }
