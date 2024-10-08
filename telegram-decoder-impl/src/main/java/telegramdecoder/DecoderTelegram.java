@@ -170,10 +170,14 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                 if (message.getData() != null && !message.getData().trim().isEmpty()) {
                     msgDataAndSeparator = message.getData().trim() + " | ";
                 }
-                if (m.media.extended_media != null
-                        && m.media.extended_media instanceof TLRPC.TL_messageExtendedMediaPreview) {
-                    TLRPC.TL_messageExtendedMediaPreview preview = (TLRPC.TL_messageExtendedMediaPreview) m.media.extended_media;
-                    message.setThumb(preview.thumb.bytes);
+                if (m.media.extended_media != null) {
+                    for(var media :m.media.extended_media) {
+                        if( media instanceof TLRPC.messageExtendedMediaPreview) {
+                            TLRPC.messageExtendedMediaPreview preview = (TLRPC.messageExtendedMediaPreview) m.media.extended_media;
+                            message.setThumb(preview.thumb.bytes);
+                            break;
+                        }
+                    }
                     
                 }
                 if(m.media.document!=null) {
@@ -218,7 +222,7 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                     TLRPC.TL_messageMediaPoll mpool=(TLRPC.TL_messageMediaPoll)m.media;
                     String text = "Pool: " + mpool.poll.question;
                     int i = 0;
-                    for(TLRPC.TL_pollAnswer a : mpool.poll.answers){
+                    for(TLRPC.PollAnswer a : mpool.poll.answers){
                        text += " | Answer " + (++i) + ": " + a.text;
                     }
                     text = msgDataAndSeparator + text;
