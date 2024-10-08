@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.tgnet.TLRPC.DocumentAttribute;
+import org.telegram.tgnet.TLRPC.MessageExtendedMedia;
 
 import dpf.ap.gpinf.interfacetelegram.ContactInterface;
 import dpf.ap.gpinf.interfacetelegram.DecoderTelegramInterface;
@@ -171,9 +172,9 @@ public class DecoderTelegram implements DecoderTelegramInterface{
                     msgDataAndSeparator = message.getData().trim() + " | ";
                 }
                 if (m.media.extended_media != null) {
-                    for(var media :m.media.extended_media) {
-                        if( media instanceof TLRPC.messageExtendedMediaPreview) {
-                            TLRPC.messageExtendedMediaPreview preview = (TLRPC.messageExtendedMediaPreview) m.media.extended_media;
+                    for (MessageExtendedMedia media : m.media.extended_media) {
+                        if (media instanceof TLRPC.TL_messageExtendedMediaPreview) {
+                            TLRPC.TL_messageExtendedMediaPreview preview = (TLRPC.TL_messageExtendedMediaPreview) media;
                             message.setThumb(preview.thumb.bytes);
                             break;
                         }
