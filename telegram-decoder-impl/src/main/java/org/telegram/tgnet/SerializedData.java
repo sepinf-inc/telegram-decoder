@@ -9,7 +9,7 @@
 package org.telegram.tgnet;
 
 import org.telegram.messenger.BuildVars;
-//import org.telegram.messenger.FileLog;
+import org.telegram.messenger.FileLog;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -60,7 +60,7 @@ public class SerializedData extends AbstractSerializedData {
                 inbuf = null;
             }
         } catch (Exception e) {
-            //FileLog.e(e);
+            FileLog.e(e);
         }
         try {
             if (in != null) {
@@ -68,7 +68,7 @@ public class SerializedData extends AbstractSerializedData {
                 in = null;
             }
         } catch (Exception e) {
-            //FileLog.e(e);
+            FileLog.e(e);
         }
         try {
             if (outbuf != null) {
@@ -76,7 +76,7 @@ public class SerializedData extends AbstractSerializedData {
                 outbuf = null;
             }
         } catch (Exception e) {
-            //FileLog.e(e);
+            FileLog.e(e);
         }
         try {
             if (out != null) {
@@ -84,7 +84,7 @@ public class SerializedData extends AbstractSerializedData {
                 out = null;
             }
         } catch (Exception e) {
-            //FileLog.e(e);
+            FileLog.e(e);
         }
     }
 
@@ -114,8 +114,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write int32 error");
-                //FileLog.e(e);
+                FileLog.e("write int32 error");
+                FileLog.e(e);
             }
         }
     }
@@ -135,8 +135,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write int64 error");
-                //FileLog.e(e);
+                FileLog.e("write int64 error");
+                FileLog.e(e);
             }
         }
     }
@@ -162,8 +162,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write raw error");
-                //FileLog.e(e);
+                FileLog.e("write raw error");
+                FileLog.e(e);
             }
         }
     }
@@ -177,8 +177,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write bytes error");
-                //FileLog.e(e);
+                FileLog.e("write bytes error");
+                FileLog.e(e);
             }
         }
     }
@@ -192,8 +192,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write byte error");
-                //FileLog.e(e);
+                FileLog.e("write byte error");
+                FileLog.e(e);
             }
         }
     }
@@ -207,8 +207,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write byte error");
-                //FileLog.e(e);
+                FileLog.e("write byte error");
+                FileLog.e(e);
             }
         }
     }
@@ -247,8 +247,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write byte array error");
-                //FileLog.e(e);
+                FileLog.e("write byte array error");
+                FileLog.e(e);
             }
         }
     }
@@ -258,8 +258,8 @@ public class SerializedData extends AbstractSerializedData {
             writeByteArray(s.getBytes("UTF-8"));
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write string error");
-                //FileLog.e(e);
+                FileLog.e("write string error");
+                FileLog.e(e);
             }
         }
     }
@@ -298,8 +298,8 @@ public class SerializedData extends AbstractSerializedData {
             }
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write byte array error");
-                //FileLog.e(e);
+                FileLog.e("write byte array error");
+                FileLog.e(e);
             }
         }
     }
@@ -309,8 +309,19 @@ public class SerializedData extends AbstractSerializedData {
             writeInt64(Double.doubleToRawLongBits(d));
         } catch (Exception e) {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("write double error");
-                //FileLog.e(e);
+                FileLog.e("write double error");
+                FileLog.e(e);
+            }
+        }
+    }
+
+    public void writeFloat(float d) {
+        try {
+            writeInt32(Float.floatToIntBits(d));
+        } catch (Exception e) {
+            if (BuildVars.LOGS_ENABLED) {
+                FileLog.e("write float error");
+                FileLog.e(e);
             }
         }
     }
@@ -341,7 +352,7 @@ public class SerializedData extends AbstractSerializedData {
                 try {
                     in.skipBytes(count);
                 } catch (Exception e) {
-                    //FileLog.e(e);
+                    FileLog.e(e);
                 }
             }
         } else {
@@ -364,10 +375,28 @@ public class SerializedData extends AbstractSerializedData {
             throw new RuntimeException("Not bool value!");
         } else {
             if (BuildVars.LOGS_ENABLED) {
-                //FileLog.e("Not bool value!");
+                FileLog.e("Not bool value!");
             }
         }
         return false;
+    }
+
+    public byte readByte(boolean exception) {
+        try {
+            byte result = in.readByte();
+            len += 1;
+            return result;
+        } catch (Exception e) {
+            if (exception) {
+                throw new RuntimeException("read byte error", e);
+            } else {
+                if (BuildVars.LOGS_ENABLED) {
+                    FileLog.e("read byte error");
+                    FileLog.e(e);
+                }
+            }
+        }
+        return 0;
     }
 
     public void readBytes(byte[] b, boolean exception) {
@@ -379,8 +408,8 @@ public class SerializedData extends AbstractSerializedData {
                 throw new RuntimeException("read bytes error", e);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
-                    //FileLog.e("read bytes error");
-                    //FileLog.e(e);
+                    FileLog.e("read bytes error");
+                    FileLog.e(e);
                 }
             }
         }
@@ -417,8 +446,8 @@ public class SerializedData extends AbstractSerializedData {
                 throw new RuntimeException("read string error", e);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
-                    //FileLog.e("read string error");
-                    //FileLog.e(e);
+                    FileLog.e("read string error");
+                    FileLog.e(e);
                 }
             }
         }
@@ -450,8 +479,8 @@ public class SerializedData extends AbstractSerializedData {
                 throw new RuntimeException("read byte array error", e);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
-                    //FileLog.e("read byte array error");
-                    //FileLog.e(e);
+                    FileLog.e("read byte array error");
+                    FileLog.e(e);
                 }
             }
         }
@@ -466,8 +495,24 @@ public class SerializedData extends AbstractSerializedData {
                 throw new RuntimeException("read double error", e);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
-                    //FileLog.e("read double error");
-                    //FileLog.e(e);
+                    FileLog.e("read double error");
+                    FileLog.e(e);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public float readFloat(boolean exception) {
+        try {
+            return Float.intBitsToFloat(readInt32(exception));
+        } catch (Exception e) {
+            if (exception) {
+                throw new RuntimeException("read float error", e);
+            } else {
+                if (BuildVars.LOGS_ENABLED) {
+                    FileLog.e("read float error");
+                    FileLog.e(e);
                 }
             }
         }
@@ -487,8 +532,8 @@ public class SerializedData extends AbstractSerializedData {
                 throw new RuntimeException("read int32 error", e);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
-                    //FileLog.e("read int32 error");
-                    //FileLog.e(e);
+                    FileLog.e("read int32 error");
+                    FileLog.e(e);
                 }
             }
         }
@@ -508,8 +553,8 @@ public class SerializedData extends AbstractSerializedData {
                 throw new RuntimeException("read int64 error", e);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
-                    //FileLog.e("read int64 error");
-                    //FileLog.e(e);
+                    FileLog.e("read int64 error");
+                    FileLog.e(e);
                 }
             }
         }

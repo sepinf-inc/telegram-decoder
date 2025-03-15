@@ -389,4 +389,12 @@ public class Utilities {
         }
         return null;
     }
+    
+    public static interface Callback<T> {
+        public void run(T arg);
+    }
+
+    public static interface CallbackReturn<Arg, ReturnType> {
+        public ReturnType run(Arg arg);
+    }
 }
