@@ -10,7 +10,7 @@
 
   <groupId>dpf.ap</groupId>
   <artifactId>telegram-decoder</artifactId>
-  <version>1.0.13-SNAPSHOT</version>
+  <version>1.0.13</version>
   <packaging>pom</packaging>
   
   <modules>
