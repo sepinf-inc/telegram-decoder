@@ -31,5 +31,4 @@ public class SvgHelper {
     public static Path doPath(String s) {
         return null;
     }
-
 }

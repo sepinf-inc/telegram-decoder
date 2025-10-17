@@ -9,16 +9,20 @@
 package org.telegram.messenger;
 
 
+import org.telegram.tgnet.TLRPC;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.telegram.tgnet.TLRPC;
 
 public class Utilities {
 
@@ -397,4 +401,10 @@ public class Utilities {
     public static interface CallbackReturn<Arg, ReturnType> {
         public ReturnType run(Arg arg);
     }
+    public static <T> void swapItems(List<T> list, int index1, int index2) {
+        T temp = list.get(index1);
+        list.set(index1, list.get(index2));
+        list.set(index2, temp);
+    }
+
 }
