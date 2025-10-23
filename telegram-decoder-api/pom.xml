@@ -5,10 +5,19 @@
   <parent>
       <groupId>dpf.ap</groupId>
       <artifactId>telegram-decoder</artifactId>
-      <version>1.0.13</version>
+      <version>1.0.14</version>
   </parent>
 
   <artifactId>telegram-decoder-api</artifactId>
   <packaging>jar</packaging>
+
+	<dependencies>
+		<!-- for telegram-decoder-impl -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20250517</version>
+		</dependency>
+	</dependencies>
 
 </project>

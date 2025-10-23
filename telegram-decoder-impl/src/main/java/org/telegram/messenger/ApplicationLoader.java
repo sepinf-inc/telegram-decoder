@@ -10,4 +10,8 @@ public class ApplicationLoader {
         return null;
     }
 
+    public static boolean isAndroidTestEnvironment() {
+        return false;
+    }
+
 }

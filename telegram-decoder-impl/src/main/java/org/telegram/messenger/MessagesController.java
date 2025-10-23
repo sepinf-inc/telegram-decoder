@@ -6,4 +6,9 @@ public class MessagesController {
         return true;
     }
 
+    public static Object getInstance(Object selectedAccount) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
