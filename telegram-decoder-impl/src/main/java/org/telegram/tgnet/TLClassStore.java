@@ -8,13 +8,12 @@
 
 package org.telegram.tgnet;
 
-
 import java.util.HashMap;
 
-//import org.telegram.messenger.FileLog;
+import org.telegram.messenger.FileLog;
 
 public class TLClassStore {
-    private HashMap<Integer,Class> classStore;
+    private HashMap<Integer, Class> classStore;
 
     public TLClassStore() {
         classStore = new HashMap<>();
@@ -58,7 +57,7 @@ public class TLClassStore {
             try {
                 response = (TLObject) objClass.newInstance();
             } catch (Throwable e) {
-                //FileLog.e(e);
+                FileLog.e(e);
                 return null;
             }
             response.readParams(stream, exception);

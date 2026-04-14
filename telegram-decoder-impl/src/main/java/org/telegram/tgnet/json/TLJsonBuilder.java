@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+//import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.FileLog;
 
 import java.util.List;
@@ -55,6 +56,9 @@ public class TLJsonBuilder {
             result2.putOpt(key, value);
         } catch (JSONException e) {
             FileLog.e(e);
+            //if (BuildConfig.DEBUG_PRIVATE_VERSION) {
+            //    throw new RuntimeException(e);
+            //}
         }
     }
 
