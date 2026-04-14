@@ -45,7 +45,8 @@ public class DecoderTelegram implements DecoderTelegramInterface{
         c = null;
         cf = null;
         if(TYPE==MESSAGE){
-            m=TLRPC.Message.TLdeserialize(s,aux, false);
+        	System.out.println("message!");
+        	m=TLRPC.Message.TLdeserialize(s,aux, false);
         }
         if(TYPE==USER){
             u=TLRPC.User.TLdeserialize(s,aux, false);
