@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-      <groupId>dpf.ap</groupId>
+      <groupId>com.github.sepinf-inc.telegram-decoder</groupId>
       <artifactId>telegram-decoder</artifactId>
-      <version>1.0.14</version>
+      <version>1.0.15-SNAPSHOT</version>
   </parent>
 
   <artifactId>telegram-decoder-impl</artifactId>

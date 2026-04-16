@@ -9,9 +9,9 @@
     <maven.compiler.release>11</maven.compiler.release>
   </properties>
 
-  <groupId>dpf.ap</groupId>
+  <groupId>com.github.sepinf-inc.telegram-decoder</groupId>
   <artifactId>telegram-decoder</artifactId>
-  <version>1.0.14</version>
+  <version>1.0.15-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <modules>
