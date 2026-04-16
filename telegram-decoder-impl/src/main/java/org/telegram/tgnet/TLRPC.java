@@ -22271,6 +22271,9 @@ public class TLRPC {
         public static User TLdeserialize(InputSerializedData stream, int constructor, boolean exception) {
             User result = null;
             switch (constructor) {
+                case TL_user_potato.constructor:
+                    result = new TL_user_potato();
+                    break;
                 case TL_user.constructor:
                     result = new TL_user();
                     break;
@@ -22460,6 +22463,35 @@ public class TLRPC {
             if (hasFlag(flags, FLAG_1)) {
                 max_id = stream.readInt32(exception);
             }
+        }
+    }
+
+    public static class TL_user_potato extends User {
+        public static final int constructor = 0xbcb626c1;
+
+        @SuppressWarnings("unused")
+        public void readParams(InputSerializedData stream, boolean exception) {
+            flags = stream.readInt32(exception);
+            flags2 = stream.readInt32(exception);
+            id = stream.readInt32(exception);
+
+            int unknownField = stream.readInt32(exception);
+            int unknownTimeStampField = stream.readInt32(exception);
+
+            if (hasFlag(flags, FLAG_1)) {
+                first_name = stream.readString(exception);
+            }
+            if (hasFlag(flags, FLAG_2)) {
+                last_name = stream.readString(exception);
+            }
+            if (hasFlag(flags, FLAG_3)) {
+                username = stream.readString(exception);
+            }
+            String trailData = stream.readString(exception);
+        }
+
+        public void serializeToStream(OutputSerializedData stream) {
+            // not implemented
         }
     }
 
