@@ -62660,6 +62660,8 @@ public class TLRPC {
                 case 0x85d6cbe2:
                     result = new TL_message_layer135();
                     break;
+                case 0x41df7460: // potato
+                case 0x8c75c832: // potato
                 case TL_message.constructor:
                     result = new TL_message();
                     break;
