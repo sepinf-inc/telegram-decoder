@@ -74,47 +74,34 @@ public class DecoderTelegram implements DecoderTelegramInterface{
             System.err.println("Erro ao carregar usuario");
         }
     }
-    
+
     @Override
-    public long getRemetenteId(){
-        if(m!=null){
-            if(m.from_id.user_id!=0){
+    public long getRemetenteId() {
+        if (m == null) {
+            return 0;
+        }
+
+        if (m.from_id != null) {
+            if (m.from_id.user_id != 0) {
                 return m.from_id.user_id;
             }
-            if(m.from_id.chat_id!=0){
+            if (m.from_id.chat_id != 0) {
                 return m.from_id.chat_id;
             }
-            if(m.from_id.channel_id!=0){
+            if (m.from_id.channel_id != 0) {
                 return m.from_id.channel_id;
             }
-            if(m instanceof TLRPC.TL_message){
-                TLRPC.TL_message tl_m=(TLRPC.TL_message)m;
-                if(tl_m.via_bot_id!=0){
-                    return tl_m.via_bot_id;
-                }                  
+        }
+
+        if (m instanceof TLRPC.TL_message) {
+            TLRPC.TL_message tl_m = (TLRPC.TL_message) m;
+            if (tl_m.via_bot_id != 0) {
+                return tl_m.via_bot_id;
             }
-        }        
+        }
+
         return 0;
     }
-    private String objToString(Object o){
-        Class<?> c=o.getClass();
-        StringBuilder sb=new StringBuilder();
-        while(c!=null){
-        Field[] fields = c.getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    sb.append(field.getName()).append(" - ").append(field.get(o));
-                    sb.append("\n");
-                }catch (IllegalArgumentException | IllegalAccessException ex) {
-                    //ignore
-                }
-            }
-            c=c.getSuperclass();
-            
-        }
-        return sb.toString();
-    }
-
     private void updateThumb(MessageInterface message, byte[] new_thumb) {
         if (new_thumb == null)
             return;
