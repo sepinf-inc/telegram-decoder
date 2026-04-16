@@ -12,4 +12,8 @@ public class FileLog {
     public static void e(final String message, final Throwable exception) {
         // not implemented
     }
+
+    public static void e(final Throwable e, boolean b) {
+        // not implemented
+    }
 }

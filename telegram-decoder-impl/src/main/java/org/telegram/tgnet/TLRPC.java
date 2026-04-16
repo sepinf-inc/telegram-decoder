@@ -13,7 +13,6 @@ import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
@@ -39,12 +38,13 @@ import org.telegram.tgnet.tl.TL_phone;
 import org.telegram.tgnet.tl.TL_stars;
 import org.telegram.tgnet.tl.TL_stats;
 import org.telegram.tgnet.tl.TL_stories;
-import org.telegram.ui.Components.poll.PollAttachedMediaPack;
 import org.telegram.ui.Stories.MessageMediaStoryFull;
 import org.telegram.ui.Stories.MessageMediaStoryFull_old;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
 
 public class TLRPC {
 
@@ -62506,7 +62506,7 @@ public class TLRPC {
         public int fwd_msg_id = 0; //custom
         public String attachPath = ""; //custom
         public HashMap<String, String> params; //custom
-        public SparseArray<String> pollMediaAttachPaths; //custom
+        public TreeMap<Integer, String> pollMediaAttachPaths; //custom
         public long random_id; //custom
         public int local_id = 0; //custom
         public long dialog_id; //custom
@@ -62533,7 +62533,7 @@ public class TLRPC {
         public String translatedToLanguage; //custom
         public TL_textWithEntities translatedText; //custom
         public TL_textWithEntities translatedVoiceTranscription; //custom
-        public TranslateController.PollText translatedPoll; //custom
+        //public TranslateController.PollText translatedPoll; //custom
         public TL_stories.StoryItem replyStory; //custom
         public InputQuickReplyShortcut quick_reply_shortcut; //custom
         public long errorAllowedPriceStars; //custom
@@ -62741,7 +62741,7 @@ public class TLRPC {
                                         if (isPollWithAttachedMedia && paramsKey.startsWith("poll_attach_path_at_")) {
                                             try {
                                                 final int pollIndex = Integer.parseInt(paramsKey.substring("poll_attach_path_at_".length()));
-                                                PollAttachedMediaPack.setAttachPath(this, paramsValue, pollIndex);
+                                                //PollAttachedMediaPack.setAttachPath(this, paramsValue, pollIndex);
                                             } catch (Throwable ignored) {}
                                         } else {
                                             params.put(paramsKey, paramsValue);
@@ -62793,8 +62793,9 @@ public class TLRPC {
                         params = new HashMap<>();
                     }
                     for (int a = 0, N = pollMediaAttachPaths.size(); a < N; a++) {
-                        final int pollIndex = pollMediaAttachPaths.keyAt(a);
-                        final String pollAttachPath = pollMediaAttachPaths.valueAt(a);
+                        List<Integer> keys = new ArrayList<>(pollMediaAttachPaths.keySet());
+                        final int pollIndex = keys.get(a);
+                        final String pollAttachPath = pollMediaAttachPaths.get(pollIndex);
                         params.put("poll_attach_path_at_" + pollIndex, pollAttachPath);
                     }
                     isPollWithAttachedMedia = true;

@@ -1,9 +1,6 @@
 package org.telegram.tgnet;
 
-import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.NotificationCenter;
 
 public class TLParseException extends RuntimeException {
     private TLParseException(String message) {
