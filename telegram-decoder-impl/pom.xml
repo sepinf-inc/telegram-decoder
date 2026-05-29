@@ -13,7 +13,7 @@
   
   <dependencies>
     <dependency>
-      <groupId>dpf.ap</groupId>
+      <groupId>com.github.sepinf-inc.telegram-decoder</groupId>
       <artifactId>telegram-decoder-api</artifactId>
       <version>${project.version}</version>
     </dependency>
