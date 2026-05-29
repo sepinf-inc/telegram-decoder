@@ -1,9 +1,5 @@
 package org.telegram.tgnet;
 
-import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.BuildConfig;
-import org.telegram.messenger.FileLog;
-import org.telegram.messenger.NotificationCenter;
 
 public class TLParseException extends RuntimeException {
     private TLParseException(String message) {
@@ -11,6 +7,7 @@ public class TLParseException extends RuntimeException {
     }
 
     public static void doThrowOrLog(InputSerializedData stream, String tlTypeName, int constructorId, boolean throwEnabled) {
+/*
         final TLDataSourceType dataSourceType = stream != null ? stream.getDataSourceType() : null;
         final String message = String.format("can't parse magic %x in %s. Source: %s", constructorId, tlTypeName, dataSourceType);
         final TLParseException tlParseException = new TLParseException(message);
@@ -26,5 +23,6 @@ public class TLParseException extends RuntimeException {
         if (throwEnabled) {
             throw tlParseException;
         }
+*/
     }
 }
