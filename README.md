@@ -34,7 +34,6 @@ Changes made to upstream files in `org/telegram/tgnet` (check them after each me
 - `TLParseException.java`: `doThrowOrLog` body commented out.
 - `TLRPC.java`: PotatoChat support (`TL_user_potato` and message constructors
   `0x41df7460`, `0x8c75c832`); `TranslateController` usage removed.
-- `json/TLJsonBuilder.java`, `json/TLJsonParser.java`: `BuildConfig` checks removed.
 - `tl/TL_stars.java`: `PaidReactionPrivacy.getDialogId()` returns `0`.
 - `tl/TL_stories.java`: `StoryPrivacyBottomSheet` usage removed.
 

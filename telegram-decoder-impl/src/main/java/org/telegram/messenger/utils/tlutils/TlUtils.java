@@ -4,11 +4,15 @@ import java.util.ArrayList;
 
 import org.telegram.tgnet.TLRPC;
 
+/** Stub of upstream TlUtils with only the methods used by tgnet. */
 public final class TlUtils {
     private TlUtils() {
     }
 
-    /** Same contract as upstream: drops all entities if any is out of bounds for text. */
+    /**
+     * Same logic as upstream (called from readParams): drops all entities if any of them is out of
+     * the text bounds. The upstream ApplicationLoader.isAndroidTestEnvironment() check is always false here.
+     */
     public static void validateEntities(ArrayList<TLRPC.MessageEntity> entities, String text) {
         if (entities == null || entities.isEmpty()) {
             return;
