@@ -27,21 +27,55 @@ public class Util {
         return result;
     }
 
+    private static final Field[] NO_FIELDS = new Field[0];
+
+    /**
+     * Public/protected instance fields of each class, superclass fields first (same order as
+     * {@link #getAllFields(Class)}). Computed once per class: ClassValue is thread-safe and does not
+     * prevent the class from being unloaded.
+     */
+    private static final ClassValue<Field[]> INSTANCE_FIELDS = new ClassValue<Field[]>() {
+        @Override
+        protected Field[] computeValue(Class<?> type) {
+            final Class<?> superclass = type.getSuperclass();
+            final Field[] inherited = superclass != null ? get(superclass) : NO_FIELDS;
+            final ArrayList<Field> fields = new ArrayList<>(inherited.length + 16);
+            Collections.addAll(fields, inherited);
+            final boolean publicType = Modifier.isPublic(type.getModifiers());
+            for (Field f : type.getDeclaredFields()) {
+                final int mod = f.getModifiers();
+                if (Modifier.isStatic(mod) || f.isSynthetic() || !(Modifier.isPublic(mod) || Modifier.isProtected(mod))) {
+                    continue;
+                }
+                if (!publicType || !Modifier.isPublic(mod)) {
+                    try {
+                        f.setAccessible(true);
+                    } catch (RuntimeException e) {
+                        continue;
+                    }
+                }
+                fields.add(f);
+            }
+            return fields.toArray(NO_FIELDS);
+        }
+    };
+
+    /**
+     * Puts the non-null public/protected instance fields of o into the map (value.toString()).
+     * Static fields (constants such as FLAG_* and constructor) are not included.
+     */
     public static void fieldsToMap(Map<String, Object> other, Object o) {
         if (o == null) {
             return;
         }
-        List<Field> fields = getAllFields(o.getClass());
-
-        for (Field f : fields) {
+        for (Field f : INSTANCE_FIELDS.get(o.getClass())) {
             try {
-                Object val = f.get(o);
+                final Object val = f.get(o);
                 if (val != null) {
                     other.put(f.getName(), val.toString());
                 }
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                // not expected: fields are public or were made accessible when cached
             }
         }
     }
