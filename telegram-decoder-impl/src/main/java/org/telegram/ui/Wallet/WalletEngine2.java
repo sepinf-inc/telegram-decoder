@@ -1,0 +1,10 @@
+package org.telegram.ui.Wallet;
+
+public final class WalletEngine2 {
+    public enum SendPhase {
+        IDLE, VALIDATING, AUTHORIZING, PREPARING, PERSISTING,
+        READY_TO_SUBMIT, SUBMITTING, SUBMISSION_UNKNOWN, SUBMITTED,
+        HANDED_OFF, CONFIRMED, REPLACED, SEQUENCE_NUMBER_CONSUMED,
+        EXPIRED, SUPERSEDED, FAILED, CANCELLED
+    }
+}
