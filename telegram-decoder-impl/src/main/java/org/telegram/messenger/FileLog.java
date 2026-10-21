@@ -9,6 +9,10 @@ public class FileLog {
         // not implemented
     }
 
+    public static void e(final Throwable e, final boolean logToAppCenter) {
+        // not implemented
+    }
+
     public static void e(final String message, final Throwable exception) {
         // not implemented
     }

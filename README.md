@@ -31,7 +31,8 @@ mvn clean install
 Changes made to upstream files in `org/telegram/tgnet` (check them after each merge):
 
 - `ConnectionsManager.java` removed; `TextUtils.java` added.
-- `TLParseException.java`: `doThrowOrLog` body commented out.
+- `TLParseException.java`: UI debug notification in `doThrowOrLog` commented out (parse errors still throw
+  when `exception` is true; `DecoderTelegram` relies on it to reject blobs it cannot fully decode).
 - `TLRPC.java`: PotatoChat support (`TL_user_potato` and message constructors
   `0x41df7460`, `0x8c75c832`); `TranslateController` usage removed.
 - `tl/TL_stars.java`: `PaidReactionPrivacy.getDialogId()` returns `0`.
