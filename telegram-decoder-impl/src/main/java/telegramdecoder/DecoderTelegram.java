@@ -37,29 +37,41 @@ public class DecoderTelegram implements DecoderTelegramInterface{
     TLRPC.Chat c=null;
     TLRPC.ChatFull cf=null;
     @Override
-    public void setDecoderData(byte[] data,int TYPE) {
-        SerializedData s=new SerializedData(data);
-        int aux=s.readInt32(false);
+    public void setDecoderData(byte[] data, int TYPE) {
         m = null;
         u = null;
         c = null;
         cf = null;
-        if(TYPE==MESSAGE){
-            m=TLRPC.Message.TLdeserialize(s,aux, false);
+        if (TYPE == MESSAGE) {
+            m = decode(data, TLRPC.Message::TLdeserialize);
+        } else if (TYPE == USER) {
+            u = decode(data, TLRPC.User::TLdeserialize);
+        } else if (TYPE == CHAT) {
+            c = decode(data, TLRPC.Chat::TLdeserialize);
+            cf = decode(data, TLRPC.ChatFull::TLdeserialize);
         }
-        if(TYPE==USER){
-            u=TLRPC.User.TLdeserialize(s,aux, false);
+    }
+
+    @FunctionalInterface
+    private interface TLDecoder<T> {
+        T decode(SerializedData stream, int constructor, boolean exception);
+    }
+
+    /**
+     * Decodes a TL object in strict mode. Returns null when the data is not fully understood (unknown
+     * constructor, e.g. from an app layer newer than this decoder, invalid vector size or read past the end),
+     * instead of returning an object whose fields were read from misaligned positions.
+     */
+    private static <T> T decode(byte[] data, TLDecoder<T> decoder) {
+        if (data == null || data.length < 4) {
+            return null;
         }
-        if(TYPE==CHAT){
-            c=TLRPC.Chat.TLdeserialize(s, aux, false);
-            s=new SerializedData(data);
-            aux=s.readInt32(false);
-            
-            cf=TLRPC.ChatFull.TLdeserialize(s, aux, false);
-            
-            
+        final StrictSerializedData stream = new StrictSerializedData(data);
+        try {
+            return decoder.decode(stream, stream.readInt32(true), true);
+        } catch (RuntimeException e) {
+            return null;
         }
-        
     }
 
     @Override
@@ -380,10 +392,7 @@ public class DecoderTelegram implements DecoderTelegramInterface{
         return null;
     }
     public static Object load(byte[] data){
-        SerializedData s=new SerializedData(data);
-        int aux=s.readInt32(false);
-        return TLRPC.User.TLdeserialize(s,aux, false);
-        
+        return decode(data, TLRPC.User::TLdeserialize);
     }
 
     
